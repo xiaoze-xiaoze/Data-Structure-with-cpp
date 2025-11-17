@@ -28,7 +28,7 @@ public:
 
     int getLength() const { return length; }
 
-    bool empty() const { return length == 0; }
+    bool isEmpty() const { return length == 0; }
 
     std::expected<void, DataStructureError> insert(int index, const T& value) {
         if (index < 0 || index > length) return std::unexpected(DataStructureError::IndexOutOfRange);
@@ -46,7 +46,7 @@ public:
         return {};
     }
 
-     std::expected<void, DataStructureError> pushFront(const T& value) {
+    std::expected<void, DataStructureError> pushFront(const T& value) {
         return insert(0, value);
     }
 
@@ -71,11 +71,11 @@ public:
         return value;
     }
 
-     std::expected<void, DataStructureError> popFront() {
+    std::expected<T, DataStructureError> popFront() {
         return erase(0);
     }
 
-    std::expected<void, DataStructureError> popBack() {
+    std::expected<T, DataStructureError> popBack() {
         return erase(length - 1);
     }
 

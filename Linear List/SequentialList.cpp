@@ -17,9 +17,9 @@ public:
     
     int getLength() { return length; }
     
-    bool empty() { return length == 0; }
+    bool isEmpty() { return length == 0; }
 
-    bool full() { return length == capacity; }
+    bool isFull() { return length == capacity; }
 
     std::expected<void, DataStructureError> insert(int index, const T& value) {
         if (index < 0 || index > length) return std::unexpected(DataStructureError::IndexOutOfRange);
@@ -29,7 +29,7 @@ public:
         length++;
         return {};
     }
-
+    
     std::expected<void, DataStructureError> pushFront(const T& value) {
         return insert(0, value);
     }
@@ -47,11 +47,11 @@ public:
         return value;
     }
 
-    std::expected<void, DataStructureError> popFront() {
+    std::expected<T, DataStructureError> popFront() {
         return erase(0);
     }
 
-    std::expected<void, DataStructureError> popBack() {
+    std::expected<T, DataStructureError> popBack() {
         return erase(length - 1);
     }
 
@@ -68,12 +68,12 @@ public:
 
     std::expected<T, DataStructureError> get(int index) {
         if (index < 0 || index >= length) return std::unexpected(DataStructureError::IndexOutOfRange);
-        if (empty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        if (isEmpty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
         return data[index];
     }
 
     std::expected<int, DataStructureError> find(const T& value) {
-        if (empty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        if (isEmpty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
         for (int i = 0;i < length;i++) {
             if (data[i] == value) return i;
         }
@@ -82,7 +82,7 @@ public:
 
     std::expected<T, DataStructureError> update(int index, const T& newValue) {
         if (index < 0 || index >= length) return std::unexpected(DataStructureError::IndexOutOfRange);
-        if (empty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        if (isEmpty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
         T value = data[index];
         data[index] = newValue;
         return value;

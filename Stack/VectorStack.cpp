@@ -13,14 +13,14 @@ public:
 
     ~VectorStack() = default;
 
-    bool empty() const { return data.empty(); }
+    bool isEmpty() const { return data.empty(); }
 
     std::expected<T, DataStructureError> top() const {
         if (empty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
         return data.back();
     }
 
-    int size() const { return data.size(); }
+    int getSize() const { return data.size(); }
 
     void push(const T& value) {
         data.push_back(value);

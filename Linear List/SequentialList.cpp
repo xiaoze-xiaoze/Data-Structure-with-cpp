@@ -23,7 +23,7 @@ public:
 
     std::expected<void, DataStructureError> insert(int index, const T& value) {
         if (index < 0 || index > length) return std::unexpected(DataStructureError::IndexOutOfRange);
-        if (full()) return std::unexpected(DataStructureError::ContainerIsFull);
+        if (isFull()) return std::unexpected(DataStructureError::ContainerIsFull);
         for (int i = length; i > index; i--) data[i] = data[i - 1];
         data[index] = value;
         length++;

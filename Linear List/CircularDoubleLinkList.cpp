@@ -14,7 +14,7 @@ private:
     int length;
 
 public:
-    explicit CircularDoubleLinkList() length(0) {
+    explicit CircularDoubleLinkList() : length(0) {
         head = new Node{ T(), nullptr, nullptr };
         head->next = head;
         head->prev = head;
@@ -79,7 +79,7 @@ public:
         return erase(length - 1);
     }
 
-    std::expected<int, DataStructureError> remove(const T& value) {
+    std::expected<void, DataStructureError> remove(const T& value) {
         Node* deleteNode = head->next;
         for (int i = 0;i < length;i++) {
             if (deleteNode->data == value) {
@@ -92,7 +92,7 @@ public:
                 }
                 delete deleteNode;
                 length--;
-                return i;
+                return {};
             }
         }
         return std::unexpected(DataStructureError::ElementNotFound);

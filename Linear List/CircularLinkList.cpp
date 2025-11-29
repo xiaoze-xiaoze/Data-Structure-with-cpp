@@ -74,20 +74,19 @@ public:
         return erase(length - 1);
     }
 
-    std::expected<T, DataStructureError> remove(const T& value) {
+    std::expected<void, DataStructureError> remove(const T& value) {
         Node* prevNode = head;
         for (int i = 0;i < length;i++) {
             if (prevNode->next->data == value) {
                 Node* deleteNode = prevNode->next;
                 prevNode->next = deleteNode->next;
-                T foundValue = deleteNode->data;
                 delete deleteNode;
                 if (i == length - 1) {
                     tail = prevNode;
                     tail->next = head;
                 }
                 length--;
-                return foundValue;
+                return {};
             }
         }
         return std::unexpected(DataStructureError::ElementNotFound);

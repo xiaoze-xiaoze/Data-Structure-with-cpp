@@ -7,7 +7,8 @@ enum class DataStructureError {
     ContainerIsFull,
     InvalidArgument,
     MemoryAllocationFailed,
-    ElementNotFound
+    ElementNotFound,
+    DuplicateValue    // 
 };
 
 std::string error_message(DataStructureError error) {
@@ -18,5 +19,7 @@ std::string error_message(DataStructureError error) {
         case DataStructureError::InvalidArgument: return "Invalid argument";
         case DataStructureError::MemoryAllocationFailed: return "Memory allocation failed";
         case DataStructureError::ElementNotFound: return "Element not found";
+        case DataStructureError::DuplicateValue: return "Duplicate value";
+        default: return "Unknown error";
     }
 }

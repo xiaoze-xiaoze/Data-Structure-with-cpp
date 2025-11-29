@@ -67,16 +67,15 @@ public:
         return erase(length - 1);
     }
 
-    std::expected<T, DataStructureError> remove(const T& value) {
+    std::expected<void, DataStructureError> remove(const T& value) {    
         Node* deleteNode = head->next;
         for (int i = 0;i < length;i++) {
             if (deleteNode->data == value) {
                 deleteNode->prev->next = deleteNode->next;
                 deleteNode->next->prev = deleteNode->prev;
-                T value = deleteNode->data;
                 delete deleteNode;
                 length--;
-                return value;
+                return {};
             }
             deleteNode = deleteNode->next;
         }

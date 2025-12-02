@@ -1,6 +1,11 @@
 #include <expected>
 #include <string>
 
+#define TRY(var, expr) \
+    auto var##Result = (expr); \
+    if (!var##Result) return std::unexpected(var##Result.error()); \
+    auto var = var##Result.value()
+
 enum class DataStructureError {
     IndexOutOfRange,
     ContainerIsEmpty,

@@ -4,13 +4,12 @@
 
 template<typename T>
 class CircularDeque {
-private:
+public:
     std::vector<T> data;
     int front;
     int rear;
     int capacity;
 
-public:
     CircularDeque() = default;
     explicit CircularDeque(int capacity) : capacity(capacity + 1), front(0), rear(0) { data.resize(capacity); }
 
@@ -25,7 +24,7 @@ public:
     int getLength() const { return (rear - front + capacity) % capacity; }
 
     std::expected<void, DataStructureError> push(const T& value) {
-        if (full()) return std::unexpected(DataStructureError::ContainerIsFull);
+        if (isFull()) return std::unexpected(DataStructureError::ContainerIsFull);
         data[rear] = value;
         rear = (rear + 1) % capacity;
         return {};

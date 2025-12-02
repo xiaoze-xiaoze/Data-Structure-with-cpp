@@ -3,7 +3,7 @@
 
 template<typename T>
 class DoubleLinkList {
-private:
+public:
     struct Node {
         T data;
         Node* prev;
@@ -12,8 +12,7 @@ private:
     Node* head;
     int length;
 
-public:
-    explicit DoubleLinkList(): length(0) {
+    DoubleLinkList(): length(0) {
         head = new Node{ T(), nullptr, nullptr };
     }
 

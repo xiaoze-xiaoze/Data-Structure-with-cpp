@@ -3,7 +3,7 @@
 
 template<typename T>
 class LinkList {
-private:
+public:
     struct Node {
         T data;
         Node* next;
@@ -11,8 +11,7 @@ private:
     Node* head;
     int length;
 
-public:
-    explicit LinkList(): length(0) { head = new Node{ T(), nullptr }; }
+    LinkList(): length(0) { head = new Node{ T(), nullptr }; }
 
     ~LinkList() {
         clear();

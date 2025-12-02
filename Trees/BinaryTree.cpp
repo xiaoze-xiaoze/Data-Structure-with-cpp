@@ -7,7 +7,7 @@
 
 template<typename T>
 class BinaryTree {
-protected:
+public:
     struct Node {
         T data;
         Node* parent;
@@ -16,7 +16,6 @@ protected:
     };
     Node* root;
 
-public:
     BinaryTree() : root(nullptr) {}
 
     virtual ~BinaryTree() { clear(); }
@@ -116,11 +115,13 @@ public:
             if (current != nullptr) {
                 stack.push(current);
                 current = current->left;
-            } else {
+            } 
+            else {
                 Node* peekNode = stack.top();
                 if (peekNode->right != nullptr && lastVisited != peekNode->right) {
                     current = peekNode->right;
-                } else {
+                } 
+                else {
                     visitor(peekNode);
                     lastVisited = stack.top();
                     stack.pop();
@@ -226,19 +227,19 @@ public:
         return root;
     }
 
-    std::expected<Node*, DataStructureError> find(Node* node, const T& value) const {
-        if (node == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
-        if (node->data == value) return node;
-        auto leftNode = find(node->left, value);
-        return leftNode.has_value() ? leftNode : find(node->right, value);
+    std::expected<Node*, DataStructureError> find(const T& value) const {
+        if (root == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        if (root->data == value) return root;
+        auto leftNode = find(root->left, value);
+        return leftNode.has_value() ? leftNode : find(root->right, value);
     }
 
-    std::expected<void, DataStructureError> erase(Node* node) {
-        if (node == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
-        if (node->left != nullptr) erase(node->left);
-        if (node->right != nullptr) erase(node->right);
-        delete node;
-        return {};
+    void erase(Node* node) {
+        if (node != nullptr) {
+            erase(node->left);
+            erase(node->right);
+            delete node;
+        }
     }
 
     std::expected<void, DataStructureError> eraseLeft(Node* parent) {
@@ -309,5 +310,6 @@ public:
 
     void clear() {
         erase(root);
+        root = nullptr;
     }
 };

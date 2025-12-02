@@ -4,10 +4,9 @@
 
 template<typename T>
 class VectorStack {
-private:
+public:
     std::vector<T> data;
 
-public:
     VectorStack() = default;
     explicit VectorStack(int capacity) { data.reserve(capacity); }
 
@@ -16,7 +15,7 @@ public:
     bool isEmpty() const { return data.empty(); }
 
     std::expected<T, DataStructureError> top() const {
-        if (empty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        if (isEmpty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
         return data.back();
     }
 
@@ -27,7 +26,7 @@ public:
     }
 
     std::expected<T, DataStructureError> pop() {
-        if (empty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        if (isEmpty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
         T value = data.back();
         data.pop_back();
         return value;

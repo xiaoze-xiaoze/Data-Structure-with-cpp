@@ -3,7 +3,7 @@
 
 template<typename T>
 class CircularLinkList {
-private:
+public:
     struct Node {
         T data;
         Node* next;
@@ -12,8 +12,7 @@ private:
     Node* tail;
     int length;
 
-public:
-    explicit CircularLinkList(): length(0) {
+    CircularLinkList(): length(0) {
         head = new Node{ T(), nullptr };
         head->next = head;
         tail = head;

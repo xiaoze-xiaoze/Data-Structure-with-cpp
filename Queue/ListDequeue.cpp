@@ -4,10 +4,9 @@
 
 template<typename T>
 class ListDequeue {
-private:
+public:
     std::list<T> data;
 
-public:
     ListDequeue() = default;
 
     ~ListDequeue() = default;

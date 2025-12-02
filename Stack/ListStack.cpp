@@ -4,10 +4,9 @@
 
 template<typename T>
 class ListStack {
-private:
+public:
     std::list<T> data;
 
-public:
     ListStack() = default;
 
     ~ListStack() = default;
@@ -15,7 +14,7 @@ public:
     bool isEmpty() const { return data.empty(); }
 
     std::expected<T, DataStructureError> top() const {
-        if (empty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        if (isEmpty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
         return data.back();
     }
 
@@ -26,7 +25,7 @@ public:
     }
 
     std::expected<T, DataStructureError> pop() {
-        if (empty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        if (isEmpty()) return std::unexpected(DataStructureError::ContainerIsEmpty);
         T value = data.back();
         data.pop_back();
         return value;

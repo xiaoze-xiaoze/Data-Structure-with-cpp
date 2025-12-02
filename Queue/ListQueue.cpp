@@ -4,10 +4,9 @@
 
 template<typename T>
 class LinkQueue {
-private:
+public:
     std::list<T> data;
 
-public:
     LinkQueue() = default;
 
     ~LinkQueue() = default;

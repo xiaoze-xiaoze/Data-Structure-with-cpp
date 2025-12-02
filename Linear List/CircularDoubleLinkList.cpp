@@ -3,18 +3,17 @@
 
 template<typename T>
 class CircularDoubleLinkList {
-private:
+public:
     struct Node {
         T data;
         Node* prev;
         Node* next;
-    }
+    };
     Node* head;
     Node* tail;
     int length;
 
-public:
-    explicit CircularDoubleLinkList() : length(0) {
+    CircularDoubleLinkList() : length(0) {
         head = new Node{ T(), nullptr, nullptr };
         head->next = head;
         head->prev = head;

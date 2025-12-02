@@ -2,38 +2,38 @@
 
 template<typename T>
 class BinarySearchTree : public BinaryTree<T> {
-protected:
-    using Node = typename BinaryTree<T>::Node;
-    using BinaryTree<T>::root;  
-
 public:
+    using Node = typename BinaryTree<T>::Node;
+    using BinaryTree<T>::root;
+
     BinarySearchTree() : BinaryTree<T>() {}
 
     std::expected<void, DataStructureError> insert(const T& value) {
         if (root == nullptr) {
-            root = new Node(value, nullptr, nullptr, nullptr);
+            root = new Node{value, nullptr, nullptr, nullptr};
             return {};
         }
         Node* current = root;
         while (current != nullptr) {
             if (value < current->data) {
                 if (current->left == nullptr) {
-                    current->left = new Node(value, nullptr, nullptr, current);
-                    return {};
+                    current->left = new Node{value, current, nullptr, nullptr};
+                    break;
                 }
                 current = current->left;
-            } 
+            }
             else if (value > current->data) {
                 if (current->right == nullptr) {
-                    current->right = new Node(value, nullptr, nullptr, current);
-                    return {};
+                    current->right = new Node{value, current, nullptr, nullptr};
+                    break;
                 }
                 current = current->right;
-            } 
+            }
             else {
                 return std::unexpected(DataStructureError::DuplicateValue);
             }
         }
+        return {};
     }
 
     std::expected<Node*, DataStructureError> find(const T& value) {
@@ -61,8 +61,7 @@ public:
 
     std::expected<void, DataStructureError> remove(const T& value) {
         if (root == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
-        Node* target = find(value);
-        if (target == nullptr) return std::unexpected(DataStructureError::ElementNotFound);
+        TRY(target, find(value));
         if (target->left == nullptr && target->right == nullptr) {
             if (target == root) root = nullptr;
             else if (target == target->parent->left) target->parent->left = nullptr;
@@ -88,11 +87,19 @@ public:
         else {
             Node* successor = target->right;
             while (successor->left != nullptr) successor = successor->left;
-            target->data = successor->data;
-            if (successor->parent->left == successor) successor->parent->left = successor->right;
-            else successor->parent->right = successor->right;
-            if (successor->right != nullptr) successor->right->parent = successor->parent;
-            delete successor;
+            if (successor->parent != target) {
+                successor->parent->left = successor->right;
+                if (successor->right) successor->right->parent = successor->parent;
+                successor->right = target->right;
+                successor->right->parent = successor;
+            }
+            successor->left = target->left;
+            if (target->left) target->left->parent = successor;
+            successor->parent = target->parent;
+            if (target == root) root = successor;
+            else if (target->parent->left == target) target->parent->left = successor;
+            else target->parent->right = successor;
+            delete target;
         }
         return {};
     }

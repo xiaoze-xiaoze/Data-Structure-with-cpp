@@ -3,12 +3,11 @@
 
 template<typename T>
 class SequentialList {
-private:
+public:
     T* data;
     int capacity;
     int length;
 
-public:
     explicit SequentialList(int capacity) : capacity(capacity), length(0), data(new T[capacity]) {}
 
     ~SequentialList() { delete[] data; }

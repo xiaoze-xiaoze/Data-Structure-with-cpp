@@ -4,14 +4,13 @@
 
 template<typename T>
 class CircularDequeue {
-private:
+public:
     std::vector<T> data;
     int front;
     int rear;
     int capacity;
     int length;
 
-public:
     CircularDequeue() = default;
     explicit CircularDequeue(int capacity) : capacity(capacity + 1), front(0), rear(0), length(0) { data.resize(capacity); }
 

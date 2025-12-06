@@ -4,8 +4,11 @@ template<typename T>
 class BinarySearchTree : public BinaryTree<T> {
 public:
     using Node = typename BinaryTree<T>::Node;
+
+protected:
     using BinaryTree<T>::root;
 
+public:
     BinarySearchTree() : BinaryTree<T>() {}
 
     std::expected<void, DataStructureError> insert(const T& value) {
@@ -59,10 +62,12 @@ public:
         return current->data;
     }
 
-    std::expected<void, DataStructureError> remove(const T& value) {
+    std::expected<Node*, DataStructureError> remove(const T& value) {
         if (root == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
         TRY(target, find(value));
+        Node* rebalanceStart = nullptr;
         if (target->left == nullptr && target->right == nullptr) {
+            rebalanceStart = target->parent;
             if (target == root) root = nullptr;
             else if (target == target->parent->left) target->parent->left = nullptr;
             else target->parent->right = nullptr;
@@ -70,6 +75,7 @@ public:
         }
         else if (target->left == nullptr || target->right == nullptr) {
             Node* child = target->left ? target->left : target->right;
+            rebalanceStart = target->parent;
             if (target == root) {
                 root = child;
                 root->parent = nullptr;
@@ -87,20 +93,13 @@ public:
         else {
             Node* successor = target->right;
             while (successor->left != nullptr) successor = successor->left;
-            if (successor->parent != target) {
-                successor->parent->left = successor->right;
-                if (successor->right) successor->right->parent = successor->parent;
-                successor->right = target->right;
-                successor->right->parent = successor;
-            }
-            successor->left = target->left;
-            if (target->left) target->left->parent = successor;
-            successor->parent = target->parent;
-            if (target == root) root = successor;
-            else if (target->parent->left == target) target->parent->left = successor;
-            else target->parent->right = successor;
-            delete target;
+            target->data = successor->data;
+            rebalanceStart = successor->parent;
+            if (successor->parent->left == successor) successor->parent->left = successor->right;
+            else successor->parent->right = successor->right;
+            if (successor->right) successor->right->parent = successor->parent;
+            delete successor;
         }
-        return {};
+        return rebalanceStart;
     }
 };

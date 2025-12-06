@@ -14,8 +14,11 @@ public:
         Node* left;
         Node* right;
     };
+
+protected:
     Node* root;
 
+public:
     BinaryTree() : root(nullptr) {}
 
     virtual ~BinaryTree() { clear(); }

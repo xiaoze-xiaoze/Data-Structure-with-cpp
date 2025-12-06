@@ -12,9 +12,10 @@ public:
         Node* right;
         Color color;
     };
-     Node* root;
 
 protected:
+    Node* root;
+
     void rotateLeft(Node* node) {
         Node* newRoot = node->right;
         Node* orphan = newRoot->left;
@@ -87,8 +88,68 @@ protected:
         root->color = BLACK;
     }
 
-    void removeFixUp(Node* node) {
-
+    void removeFixUp(Node* node, Node* parent) {
+        while (node != root && (node == nullptr || node->color == BLACK)) {
+            if (node == parent->left) {
+                Node* sibling = parent->right;
+                if (sibling != nullptr && sibling->color == RED) {
+                    sibling->color = BLACK;
+                    parent->color = RED;
+                    rotateLeft(parent);
+                    sibling = parent->right;
+                }
+                bool leftChildBlack = (sibling->left == nullptr || sibling->left->color == BLACK);
+                bool rightChildBlack = (sibling->right == nullptr || sibling->right->color == BLACK);
+                if (leftChildBlack && rightChildBlack) {
+                    sibling->color = RED;
+                    node = parent;
+                    parent = node->parent;
+                }
+                else {
+                    if (rightChildBlack) {
+                        if (sibling->left != nullptr) sibling->left->color = BLACK;
+                        sibling->color = RED;
+                        rotateRight(sibling);
+                        sibling = parent->right;
+                    }
+                    sibling->color = parent->color;
+                    parent->color = BLACK;
+                    if (sibling->right != nullptr) sibling->right->color = BLACK;
+                    rotateLeft(parent);
+                    node = root;
+                }
+            }
+            else {
+                Node* sibling = parent->left;
+                if (sibling != nullptr && sibling->color == RED) {
+                    sibling->color = BLACK;
+                    parent->color = RED;
+                    rotateRight(parent);
+                    sibling = parent->left;
+                }
+                bool leftChildBlack = (sibling->left == nullptr || sibling->left->color == BLACK);
+                bool rightChildBlack = (sibling->right == nullptr || sibling->right->color == BLACK);
+                if (leftChildBlack && rightChildBlack) {
+                    sibling->color = RED;
+                    node = parent;
+                    parent = node->parent;
+                }
+                else {
+                    if (leftChildBlack) {
+                        if (sibling->right != nullptr) sibling->right->color = BLACK;
+                        sibling->color = RED;
+                        rotateLeft(sibling);
+                        sibling = parent->left;
+                    }
+                    sibling->color = parent->color;
+                    parent->color = BLACK;
+                    if (sibling->left != nullptr) sibling->left->color = BLACK;
+                    rotateRight(parent);
+                    node = root;
+                }
+            }
+        }
+        if (node != nullptr) node->color = BLACK;
     }
 
     void erase(Node* node) {
@@ -103,6 +164,33 @@ public:
     RedBlackTree() : root(nullptr) {}
 
     ~RedBlackTree() { clear(); }
+
+    bool isEmpty() const { return root == nullptr; }
+
+    std::expected<Node*, DataStructureError> find(const T& value) const {
+        Node* current = root;
+        while (current != nullptr) {
+            if (value == current->data) return current;
+            current = (value < current->data) ? current->left : current->right;
+        }
+        return std::unexpected(DataStructureError::ElementNotFound);
+    }
+
+    std::expected<T, DataStructureError> getMin() const {
+        if (root == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        Node* current = root;
+        while (current->left != nullptr) current = current->left;
+        return current->data;
+    }
+
+    std::expected<T, DataStructureError> getMax() const {
+        if (root == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        Node* current = root;
+        while (current->right != nullptr) current = current->right;
+        return current->data;
+    }
+
+
 
     std::expected <void, DataStructureError> insert(const T& value) {
         Node* newNode = nullptr;
@@ -133,6 +221,27 @@ public:
             }
         }
         insertFixUp(newNode);
+        return {};
+    }
+    
+    std::expected<void, DataStructureError> remove(const T& value) {
+        if (root == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
+        TRY(target, find(value));
+        Node* toDelete = target;
+        if (target->left != nullptr && target->right != nullptr) {
+            toDelete = target->right;
+            while (toDelete->left != nullptr) toDelete = toDelete->left;
+            target->data = toDelete->data;
+        }
+        Node* replacement = (toDelete->left != nullptr) ? toDelete->left : toDelete->right;
+        Node* replacementParent = toDelete->parent;
+        Color deletedColor = toDelete->color;
+        if (replacement != nullptr) replacement->parent = toDelete->parent;
+        if (toDelete->parent == nullptr) root = replacement;
+        else if (toDelete == toDelete->parent->left) toDelete->parent->left = replacement;
+        else toDelete->parent->right = replacement;
+        delete toDelete;
+        if (deletedColor == BLACK && (replacement != nullptr || replacementParent != nullptr)) removeFixUp(replacement, replacementParent);
         return {};
     }
 

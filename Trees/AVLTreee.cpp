@@ -86,43 +86,7 @@ public:
     }
 
     std::expected<void, DataStructureError> remove(const T& value) {
-        if (root == nullptr) return std::unexpected(DataStructureError::ContainerIsEmpty);
-        TRY(target, this->find(value));
-        Node* rebalanceStart = nullptr;
-        if (target->left == nullptr && target->right == nullptr) {
-            rebalanceStart = target->parent;
-            if (target == root) root = nullptr;
-            else if (target == target->parent->left) target->parent->left = nullptr;
-            else target->parent->right = nullptr;
-            delete target;
-        }
-        else if (target->left == nullptr || target->right == nullptr) {
-            Node* child = target->left ? target->left : target->right;
-            rebalanceStart = target->parent;
-            if (target == root) {
-                root = child;
-                root->parent = nullptr;
-            }
-            else if (target->parent->left == target) {
-                target->parent->left = child;
-                child->parent = target->parent;
-            }
-            else {
-                target->parent->right = child;
-                child->parent = target->parent;
-            }
-            delete target;
-        }
-        else {
-            Node* successor = target->right;
-            while (successor->left != nullptr) successor = successor->left;
-            target->data = successor->data;
-            rebalanceStart = successor->parent;
-            if (successor->parent->left == successor) successor->parent->left = successor->right;
-            else successor->parent->right = successor->right;
-            if (successor->right != nullptr) successor->right->parent = successor->parent;
-            delete successor;
-        }
+        TRY(rebalanceStart, BinarySearchTree<T>::remove(value));
         rebalance(rebalanceStart);
         return {};
     }

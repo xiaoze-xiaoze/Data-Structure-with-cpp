@@ -22,7 +22,7 @@ Data Structures with C++
 ├── Stack
 │   ├── ListStack.cpp
 │   └── VectorStack.cpp
-├── Trees
+├── Tree
 │   ├── AVLTreee.cpp
 │   ├── BinarySearchTree.cpp
 │   ├── BinaryTree.cpp
@@ -30,5 +30,6 @@ Data Structures with C++
 ├── Graph (empty)
 ├── Search (empty)
 ├── Sorting Algorithms (empty)
-└── Strings (empty)
+└── String (empty)
 ```
+
